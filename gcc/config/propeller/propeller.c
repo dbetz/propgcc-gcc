@@ -55,7 +55,7 @@
 #include "c-tree.h"
 #include "diagnostic.h"
 #include "target-globals.h"
-
+#include "sel-sched-ir.h"
 
 
 /*
@@ -3039,6 +3039,14 @@ fcache_block_ok (rtx first, rtx last, bool func_p, bool force_p)
                 }
               return false;
             }
+        }
+      else if (INSN_ASM_P (insn) && !force_p)
+        {
+          if (print_msgs)
+            {
+              warning (0, "could not place function %s in fcache: it contains user asm code", current_function_name ());
+            }
+          return false;
         }
       else if (GET_CODE (insn) == JUMP_INSN)
         {
