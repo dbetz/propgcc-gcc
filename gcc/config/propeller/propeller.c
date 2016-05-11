@@ -3042,6 +3042,11 @@ fcache_block_ok (rtx first, rtx last, bool func_p, bool force_p)
         }
       else if (NONJUMP_INSN_P (insn) && GET_CODE (PATTERN (insn)) == ASM_INPUT && !force_p)
         {
+          if (dump_file)
+            {
+                fprintf (dump_file, "...user asm inside block\n");
+                print_rtl_single (dump_file, insn);
+            }
           if (print_msgs)
             {
               warning (0, "could not place function %s in fcache: it contains user asm code", current_function_name ());
@@ -3171,11 +3176,16 @@ fcache_func_ok (bool force)
 {
   rtx first = get_insns ();
   rtx last = get_last_insn ();
-
+  bool ok;
+  
   if (dump_file)
     fprintf(dump_file, "considering whole function %s for fcache\n", current_function_name ());
 
-  return fcache_block_ok (first, last, true, force);
+  ok = fcache_block_ok (first, last, true, force);
+  if (dump_file)
+    fprintf(dump_file, "function is %sok for fcache\n", ok ? "" : "not ");
+  
+  return ok;
 }
 
 /*

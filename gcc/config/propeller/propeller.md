@@ -79,6 +79,7 @@
    (UNSPEC_POPM         17)
    (UNSPEC_CLKSET       18)
    (UNSPEC_CAS          19)
+   (UNSPEC_BLOCKAGE     20)
    (UNSPEC_NAKED_RET   101)
    (UNSPEC_NATIVE_RET  102)
    (UNSPEC_LOOP_START  103)
@@ -2358,6 +2359,14 @@
   "")
 
 
+;; Pseudo instruction that prevents the scheduler from moving code above this
+;; point.
+(define_insn "blockage"
+  [(unspec_volatile [(const_int 0)] UNSPEC_BLOCKAGE) ]
+  ""
+  ""
+  [(set_attr "length" "0")]
+)
 ;;
 ;; -------------------------------------------------------------------------
 ;; Low overhead looping
